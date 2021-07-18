@@ -63,6 +63,8 @@ export class TodoController {
     };
   }
 
+  
+
   @Put('/:todoId')
   async update(
     @Param('todoId') todoId,
@@ -70,11 +72,10 @@ export class TodoController {
     @Body('completed') completed,
   ): Promise<any> {
     const todos = readTodosFromDb();
-
     todos.forEach((todo) => {
       if (todo.id === todoId) {
         todo.title = title;
-        todo.completed = completed;
+        todo.completed = completed === 'true' ? true : false;
       }
     });
 
