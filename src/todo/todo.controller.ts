@@ -35,16 +35,23 @@ export class TodoController {
 
   @Post('')
   async create(@Body('title') title: string) {
+
     const todos = readTodosFromDb();
-    const newId = String(Number(todos[todos.length - 1].id) + 1);
+    const newId = todos.length !== 0? String(Number(todos[todos.length - 1].id) + 1) : '1'
     const newTodos = [
       ...todos,
       {
         id: newId,
         title,
+        completed: false,
+        place: '3'
       },
     ];
     writeTodosToDb(newTodos);
+    return {
+      success: true,
+      id: newId
+    }
   }
 
   @Get('/list')
@@ -64,18 +71,19 @@ export class TodoController {
   }
 
   
-
   @Put('/:todoId')
   async update(
     @Param('todoId') todoId,
     @Body('title') title,
     @Body('completed') completed,
+    @Body('place') place,
   ): Promise<any> {
     const todos = readTodosFromDb();
     todos.forEach((todo) => {
       if (todo.id === todoId) {
         todo.title = title;
         todo.completed = completed === 'true' ? true : false;
+        todo.place = place;
       }
     });
 
